@@ -780,7 +780,7 @@ async function selfieBtnAction(){
 	const video = document.getElementById('video');
 	try {
         stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'environment' }
+          video: { facingMode: 'user' }
         });
         video.srcObject = stream;
       } catch (err) {
