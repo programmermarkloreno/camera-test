@@ -787,11 +787,11 @@ let stream;
 //     $('#selfieModal').modal('show');
 // }
 
-async function selfieBtnAction() {
+function selfieBtnAction() {
 	$('#selfieModal').modal('show');
 	const video = document.getElementById('video');
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({
+        stream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: 'user' }
         });
         video.srcObject = stream;
