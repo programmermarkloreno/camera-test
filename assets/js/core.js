@@ -775,7 +775,7 @@ function takeSelfieBtnAction(){
     }
 }
 
-const stream;
+let stream;
 function selfieBtnAction(){
 	const video = document.getElementById('video');
 	try {
