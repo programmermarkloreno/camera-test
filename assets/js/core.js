@@ -777,17 +777,14 @@ function takeSelfieBtnAction(){
 
 let stream;
 function selfieBtnAction(){
-	$('#selfieModal').modal('show');
 	const video = document.getElementById('video');
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'user' }
-        });
+	navigator.mediaDevices.getUserMedia({ video: true })
+    .then(mediaStream => {
+        stream = mediaStream;
         video.srcObject = stream;
-      } catch (err) {
-        console.error('Error accessing camera: ', err);
-        alert('Camera access failed. Please check permissions and try again.');
-      }
+    })
+    .catch(err => console.error('Error accessing camera: ', err));
+    $('#selfieModal').modal('show');
 }
 
 function retakeSelfie(){
