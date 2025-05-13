@@ -776,18 +776,7 @@ function takeSelfieBtnAction(){
 }
 
 let stream;
-// function selfieBtnAction(){
-// 	const video = document.getElementById('video');
-// 	navigator.mediaDevices.getUserMedia({ video: true })
-//     .then(mediaStream => {
-//         stream = mediaStream;
-//         video.srcObject = stream;
-//     })
-//     .catch(err => console.error('Error accessing camera: ', err));
-//     $('#selfieModal').modal('show');
-// }
-
-function selfieBtnAction() {
+function selfieBtnAction(){
 	$('#selfieModal').modal('show');
 	const video = document.getElementById('video');
       try {
@@ -799,7 +788,7 @@ function selfieBtnAction() {
         console.error('Error accessing camera: ', err);
         alert('Camera access failed. Please check permissions and try again.');
       }
-    }
+}
 
 function retakeSelfie(){
 
