@@ -776,16 +776,30 @@ function takeSelfieBtnAction(){
 }
 
 let stream;
-function selfieBtnAction(){
+// function selfieBtnAction(){
+// 	const video = document.getElementById('video');
+// 	navigator.mediaDevices.getUserMedia({ video: true })
+//     .then(mediaStream => {
+//         stream = mediaStream;
+//         video.srcObject = stream;
+//     })
+//     .catch(err => console.error('Error accessing camera: ', err));
+//     $('#selfieModal').modal('show');
+// }
+
+async function startCamera() {
+	$('#selfieModal').modal('show');
 	const video = document.getElementById('video');
-	navigator.mediaDevices.getUserMedia({ video: true })
-    .then(mediaStream => {
-        stream = mediaStream;
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user' }
+        });
         video.srcObject = stream;
-    })
-    .catch(err => console.error('Error accessing camera: ', err));
-    $('#selfieModal').modal('show');
-}
+      } catch (err) {
+        console.error('Error accessing camera: ', err);
+        alert('Camera access failed. Please check permissions and try again.');
+      }
+    }
 
 function retakeSelfie(){
 
