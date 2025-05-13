@@ -829,6 +829,7 @@ function cancelSelfieBtnAction(){
     }else{
 			alert('Error in Cancel selfie!');
 		}
+	$('#selfieModal').modal('hide');
 }
 //end for selfie registration
 
