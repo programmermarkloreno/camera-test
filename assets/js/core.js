@@ -776,7 +776,7 @@ function takeSelfieBtnAction(){
 }
 
 let stream;
-function selfieBtnAction(){
+async function selfieBtnAction(){
 	const video = document.getElementById('video');
 	try {
         stream = await navigator.mediaDevices.getUserMedia({
