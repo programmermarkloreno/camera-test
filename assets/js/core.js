@@ -787,7 +787,7 @@ let stream;
 //     $('#selfieModal').modal('show');
 // }
 
-async function startCamera() {
+async function selfieBtnAction() {
 	$('#selfieModal').modal('show');
 	const video = document.getElementById('video');
       try {
