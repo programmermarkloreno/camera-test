@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="assets/css/toast.min.css">
+	<link rel="stylesheet" href="assets/css/core.css">
+	<link rel="stylesheet" href="assets/css/JuanFi.css">
+    <title>JuanFi - Status</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<script src="assets/js/config.js"></script>
+
+</head>
+<body id="loginBody">
+
+<div class="container">
+<center>
+		<form action="$(link-logout)" name="logout" >
+			<input type="hidden" name="erase-cookie" value="true" />
+		</form>
+		
+        <div class="row">
+            <div class="col-md-12">
+				<center>
+					<div id="ancholder" class="myannouncement">
+						<marquee><span id="anc"></span></marquee>
+					</div>
+				</center>
+                <div style="max-width: 565px; min-width: 156px; margin: 0 auto 0px auto;">
+						<img class="d-block w-100" src="assets/banner.png" alt="First slide">
+				</div>
+            </div>
+
+            <div class="col-md-12">
+				<div style="margin-bottom: -5px; z-index: 1;">
+					<img style="width: 296px; min-width: 156px; height: auto; margin: 0 auto; display: block;" src="assets/img/ml-top.png" class="img-fluid"/>
+				</div>	
+
+                <div class="login">
+					<center>			
+						<span class="status-connected" style="color: #a4c2db;">Status: <span class="blinking1" id="connectionStatus" style="color: #4cd137">Paused</span></span>		
+					</center>
+
+					<div class="col-md-12" style="margin-bottom: 5px; padding: 0;">
+						<center>
+							<div class="info-ip">
+							<img src="assets/img/ip.png" width="10px" height="10px" />
+							<span id="ipc" style="font-size: 12px; color:#7d96ab">$(ip)</span>
+							</div>
+							<div class="info-mac">
+							<img src="assets/img/mac.png" width="10px" height="10px" />
+							<span style="font-size: 12px; color:#7d96ab">$(mac)</span>
+							</div>
+						</center>
+					</div>	
+
+				<div class="info-status" style="margin-bottom: 0;">
+					<center class="my-vc">
+						<div class="rmbr">Code: <span id="uvc">$(username)</span></div>	 						
+							<ul class="my-ul">	
+							<li class="my-li"><span id="my-day1">0</span>Day</li>
+							<li class="my-li"><span id="my-hour1">0</span>Hour</li>
+							<li class="my-li"><span id="my-min1">0</span>Min</li>
+							<li class="my-li"><span id="my-sec1">0</span>Sec</li>
+						</ul>							   
+							<div>
+									<div style="font-size: 10px; font-weight: bold; color: #849cb0; margin-top: 5px;">Expiration:
+									<span id="expirationTime" style="font-size: 10px; font-weight: bold; color: #a4c2db">--</span>
+									</div>
+							</div>	
+					</center>
+				</div>	
+
+				<img style="width: 150px; min-width: 100px; height: auto; margin: 0 auto; display: block;" src="assets/img/emel.png" class="img-fluid"/>
+				
+				<button type="button" id="connectBtn" onClick="resume(); return false" class="btn btn-info" style="display: block; width: 100%;">RESUME SESSION</button>
+				
+				<button type="button" id="cancelBtn" onClick="cancelPause(); return false" class="btn btn-danger mar-top " style="display: block; width: 100%;">CANCEL SESSION</button>
+
+                </div>
+				
+				<div style="margin-top: 0px; z-index: 1;">
+					<img style="width: 296px; min-width: 156px; height: auto; margin: 0 auto; display: block;" src="assets/img/ml-bottom.png" class="img-fluid"/>
+				</div>	
+				
+				<div class="footer">
+					<span class="footers">
+					Powered by: <a id="footbrand" href="https://www.facebook.com/groups/1172413279934139">JuanFi System v4.0</span>				
+				</div>
+
+            </div>
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/popper.min.js"></script>
+			<script src="assets/js/bootstrap.min.js"></script>
+			<script src="assets/js/toast.min.js"></script>
+			<script src="assets/js/core.js"></script>
+			<script src="assets/js/eload.js"></script>
+
+			<script>
+				var loginError = "";
+				var mac = "$(mac)";
+				var logoutUrl = "$(link-logout)";
+				var remainingTimer = null;
+				var hotspotAddress = "$(server-address)"; 
+				var interfaceName = "$(interface-name)";
+		
+				$(document).ready(function(){
+					$("#expirationTime").html("Loading...");
+					setTimeout(function(){
+						fetchValidity(1);
+					}, 1000);
+				});
+			</script>
+
+			
+			<div id="loaderDiv" class="spinner hidden">
+				<center>
+					<img src="assets/loading.svg" />
+				</center>
+			</div>
+</div>
+</center>
+</div>
+</body>
+
+</html>

@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<!-- IAMNOTLOGINSTRINGPLEASEDONTREMOVE -->
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="assets/css/toast.min.css">
+	<link rel="stylesheet" href="assets/css/core.css">
+	<link rel="stylesheet" href="assets/css/JuanFi.css">
+    <title>JuanFi Login Portal</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<script src="assets/js/config.js"></script>
+    <script src="assets/js/md5.js"></script>
+	<script src="assets/js/pako.min.js"></script>
+	<script src="assets/js/qrcode.min.js"></script>
+	
+<style>
+.sandwich{
+	position: relative;   
+	display: block;
+    width: 100%;
+    height: 40px;
+    letter-spacing: 2px;
+    margin-top: -40px;
+    font-weight: bold;
+}
+.input-bottom-space-20px {
+	margin-bottom: 20px;
+}
+
+.qrcode-wrapper{
+	background-color: white;
+	padding: 23px;
+	width: fit-content;
+}
+/*start 05112025 MARK*/
+body {
+	    display: flex;
+	    flex-direction: column;
+	    align-items: center;
+	    justify-content: center;
+	    height: 100vh;
+	    margin: 0;
+	}
+	video, canvas, img {
+	    max-width: 100%;
+	    height: auto;
+	}
+	button {
+	    margin-top: 10px;
+	}
+/*end*/
+</style>
+</head>
+
+<body id="loginBody">
+
+	 $(if chap-id)
+    <form name="sendin" action="$(link-login-only)" method="post" style="display:none">
+        <input type="hidden" name="username" />
+        <input type="hidden" name="password" />
+        <input type="hidden" name="dst" value="$(link-orig)" />
+        <input type="hidden" name="popup" value="true" />
+    </form>
+
+    <script>
+        var mac = "$(mac)";
+		var uIp = "$(ip)";
+        var ImOnLogin = "1";
+        var ImOnStatus = "0";
+		var alertVoucher = "0";
+		var loginError = "";
+
+        function doLogin() {
+			var vc = $("#voucherInput").val();
+			if( macAsVoucherCode && vc == "" ){
+				var macNoColon = replaceAll(mac, ":");
+				$("#voucherInput").val(macNoColon);
+			}
+			setStorageValue("activeVoucher", vc);
+			var validity = getStorageValue(vc+"validity");
+			var tempValidity = getStorageValue(vc+"tempValidity");
+			if(tempValidity != null){
+				var currentExpireDate = new Date();
+				if(validity != null){
+					currentExpireDate = new Date(parseInt(validity));
+				}
+				var minutes = parseInt(tempValidity);
+				var expireDate = new Date(currentExpireDate.getTime() + minutes*60000);
+				
+				var currentDate = new Date();
+				if(expireDate.getTime() < currentDate.getTime()){
+					removeStorageValue(vc+"validity");
+					removeStorageValue(vc+"tempValidity");
+				}else{
+					setStorageValue(vc+"validity", expireDate.getTime()+"");
+					removeStorageValue(vc+"tempValidity");
+				}
+				
+			}
+            document.sendin.username.value = vc;
+			if(loginOption == 0){
+				document.sendin.password.value = hexMD5('$(chap-id)' + "" + '$(chap-challenge)');
+			}else{
+				document.sendin.password.value = hexMD5('$(chap-id)' + vc + '$(chap-challenge)');
+			}
+            document.sendin.submit();
+            return false;
+        }
+    </script>
+	
+	<script type="text/javascript" src="assets/js/md5.js"></script>
+	<script type="text/javascript">
+	// <!--
+	    function doLoginMember() {
+		document.sendin.username.value = document.login.username.value;
+		document.sendin.password.value = hexMD5('$(chap-id)' + document.login.password.value + '$(chap-challenge)');
+		document.sendin.submit();
+		return false;
+	    }
+	//-->
+	</script>
+	$(endif)
+
+	$(if error)
+	<script>
+        loginError = "$(error)";
+    </script>
+	$(endif)
+
+    <div class="container">
+        <div class="row">
+			
+			<div class="col-md-12">
+				<center>
+					<div id="ancholder" class="myannouncement">
+						<marquee><span id="anc"></span></marquee>
+					</div>
+				</center>
+                <div style="max-width: 565px; min-width: 156px; margin: 0 auto 0px auto;">
+						<img class="d-block w-100" src="assets/banner.png" alt="First slide">
+				</div>
+            </div>
+			
+            <div class="col-md-12">
+
+				<div style="margin-bottom: -5px; z-index: 1;">
+					<img style="width: 296px; min-width: 156px; height: auto; margin: 0 auto; display: block;" src="assets/img/ml-top.png" class="img-fluid"/>
+				</div>	
+
+                <div class="login">
+					<center>
+						<span class="status-disconnected">Status: <span class="blinking1">Disconnected</span></span>
+					</center>
+					
+					<div class="info">
+						<center>
+							<div class="info-ip">
+								<img src="assets/img/ip.png" width="10px" height="10px" />
+								<span id="ipc" style="font-size: 12px; color:#7d96ab">$(ip)</span>
+								</div>
+								<div class="info-mac">
+								<img src="assets/img/mac.png" width="10px" height="10px" />
+								<span style="font-size: 12px; color:#7d96ab">$(mac)</span>
+							</div>
+						</center>
+					</div>
+
+					<img style="width: 150px; min-width: 100px; height: auto; margin: 0 auto; display: block;" src="assets/img/emel.png" class="img-fluid"/>
+
+					<div style="margin-top: 40px;">
+						<button type="button" id="insertBtn" onclick="insertBtnAction(); return false" class="btn btn-success sandwich" style="display: none;" data-toggle="modal">INSERT COIN</button>
+						
+						<button type="button" id="multiBtn" class="btn btn-success sandwich" data-toggle="modal" data-target="#insMulti" style="display: block;">INSERT COIN</button>
+
+						<button type="button" id="selfieBtn" onclick="selfieBtnAction(); return false" class="btn btn-success sandwich"  style="display: show;" data-toggle="modal">TAKE A SELFIE</button>
+					</div>
+					
+					<!-- <div style="margin-top: 40px;">
+						<button type="button" id="selfieBtn" onclick="selfieBtnAction(); return false" class="btn btn-success sandwich"  data-toggle="modal">TAKE A SELFIE</button>
+					</div> -->
+
+					<div style="width: 100%; text-align: center; padding: 0;">
+					
+						<button type="button" id="promoRateBtn" onclick="promoBtnAction(); return false" class="btn btn-info mar-top btn-sc">PROMO RATES</button>
+						
+						<button type="button" id="memberLoginBtn" class="btn btn-secondary mar-top btn-sc" data-toggle="modal" data-target="#memberModal">MEMBER LOGIN</button>
+						
+					</div>
+
+					<button type="button" id="chargingBtn" onclick="chargingBtnAction(); return false" class="btn btn-success mar-top" style="display: block; width: 100%;">CHARGING STATION</button>
+					
+					<button type="button" id="eloadBtn" onclick="eloadBtnAction(); return false" class="btn btn-info mar-top" style="display: block; width: 100%;">E-LOAD</button>
+						
+					<div class="form-group mar-top">
+						<span class="form-text text-muted" style="display: block; text-align: center;">VOUCHER</span>
+						<input type="voucher" class="form-control" id="voucherInput" aria-describedby="voucherHelp" placeholder="Voucher here..">
+						<button type="button" id="connectBtn" onClick="doLogin(); return false" class="btn btn-info btn-block mar-top">CONNECT</button>
+
+						<button type="button" id="scanQrBtn" onclick="$('#scanQrModal').modal('show'); return false" class="btn btn-primary btn-block" style="display: none">Purchase Via QR</button>
+						<small id="voucherHelp" class="form-text text-muted" style="display: block; text-align: center;">Please enter voucher code if have existing</small>	
+					</div>
+					
+					<div class="modal fade" id="insertCoinModal" style="z-index: 1500" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="insertCoinModalTitle" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+						  <div class="modal-content">
+							<div class="modal-header">
+							  <h5 class="modal-title" id="insertCoinModalTitle">Please insert the coin</h5>
+							  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							  </button>
+							</div>
+							<div class="modal-body">
+								  <div class="progress" style="margin-bottom: 10px">
+									  <div id="progressDiv" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%; height: 30px"></div>
+								  </div>
+  
+								  <div id="noticeDiv" style="display: none">
+									  <center>
+										  <h4 id="noticeText">Reading coin, please wait</h4>
+									  </center>
+								  </div>
+								  
+								  <div class="inscoin">
+								  <center>
+								  <div class="inscoinholder vcCodeHolder" id="vcCodeDiv" >
+								  <span style="color: #747d8c">Your code is</span><br>
+								  <span id="codeGeneratedBlock">
+									  <span id="codeGenerated" style="font-size: 35px; font-weight: bold; color: #4cd137">*****</span>
+								  </span>
+								  </div>
+  
+								  <div class="prettyline"></div>
+									<ul class="list-group text-left" style="list-style: none;" > 
+										<li class="list-group-item-dark" >Coin:<span id="totalCoin"> --</span><span style="margin-left: 0px;">.00 Php</span></li>
+						
+										<li class="list-group-item-dark" id="totalTimeDiv">Time:<span id="totalTime"> --</span></li>
+
+										<li class="list-group-item-dark" id="conVCholder">Converted Voucher:<span id="conVC"></span></li>
+
+										<li class="list-group-item-dark" id="expHolder">Validity: <span id="exp"></span></li>
+										
+										<li class="list-group-item-dark"  id="expectedCoinDiv" style="display: none">Expected Coin:<span id="expectedCoin"> --</span></li>							
+									</ul>                     
+								  <div class="prettyline"></div>
+
+								  <div class="inscoinholder convertVoucherBlock" id="convertVoucherBlockDiv">
+									<span style="color: #747d8c">Convert unused voucher</span><br>
+									<input type="text" class="form-control" id="convertVoucherCode" placeholder="Enter voucher" style="width: 100%; text-align: center;background: rgba(50, 50, 50, 0.5); color: #fff; border: solid 1px #325370; ">
+									<button type="button" id="convertBtn" class="btn btn-success mar-top" onclick="convertVoucherAction(); return false" style="width: 100%;">Convert</button>
+								  </div>
+
+								  </center>
+								  </div>			  
+								  
+							</div>
+							<div class="modal-footer">
+							  <button type="button" id="saveVoucherButton" onclick="saveVoucherBtnAction(); return false" class="btn btn-primary" data-dismiss="modal">
+								Done
+							  </button>
+							  <button type="button" id="cncl" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+							</div>
+						  </div>
+						</div>
+					  </div>
+					  
+					  <!-- Adding Selfie Registration | Developer: Mark Loren -->
+					  <div class="modal fade" id="selfieModal" style="z-index: 1500" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="insertCoinModalTitle" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+						  <!-- <form id="uploadForm" enctype="multipart/form-data"> -->
+							  <div class="modal-content">
+								<div class="modal-header">
+								  <h5 class="modal-title" id="insertCoinModalTitle">Please take a selfie first. Before insert!</h5>
+								  <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								  </button> -->
+								</div>
+								<div class="modal-body">
+									  <div class="inscoin">
+									  <center>
+										  <!-- <div class="inscoinholder vcCodeHolder" id="vcCodeDiv" >
+										  <span style="color: #747d8c">Your code is</span><br>
+										  <span id="codeGeneratedBlock">
+											  <span id="codeGenerated" style="font-size: 35px; font-weight: bold; color: #4cd137">*****</span>
+										  </span>
+										  </div> -->
+		  
+										  <div class="prettyline"></div>
+										   <br>
+										  <div class="inscoinholder convertVoucherBlock" id="convertVoucherBlockDiv">
+										  <span style="color: #747d8c">Take a Selfie!</span><br>
+											<video id="video" autoplay playsinline></video>
+											<canvas id="canvas" style="display:none;"></canvas>
+											<img id="preview" style="display:none;" alt="Selfie Preview">
+											<button type="button" id="capture" class="btn btn-primary" onclick="takeSelfieBtnAction(); return false">Capture</button>
+										  </div>
+										  <div class="prettyline"></div>
+									  </center>
+									  </div>			  
+									  
+								</div>
+								<div class="modal-footer">
+								  <button type="button" id="retake" style="display:none;" onclick="retakeSelfie(); return false" class="btn btn-primary">Retake</button>
+								  <button type="button" id="done" style="display:none;" onclick="doneSelfie(); return false" class="btn btn-primary" data-dismiss="modal">
+									Done
+								  </button>
+								  <button type="button" id="cnclSelfie" onclick="cancelSelfieBtnAction(); return false" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+								</div>
+							  </div>
+						  <!-- </form> -->
+						</div>
+					  </div>
+					<!--  Edn Selfie Registration -->
+
+					<div class="modal fade" id="promoRatesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+					  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+						<div class="modal-content">
+						  <div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Promo Rates</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							  <span aria-hidden="true" style="color: #fff">&times;</span>
+							</button>
+						  </div>
+						  <div class="modal-body">
+							<center>
+								<div id="rateTypeDiv">
+								<label for="rateType" class="rate-title"><b>Rate Type</b></label>
+								<select name="rateType" class="form-control" id="rateType" onChange="onRateTypeChange(this)">
+								  <option value="1">Internet</option>
+								  <option value="2">Charging</option>
+								</select>
+								</div>
+							</center>
+							<br/>
+							<center>	
+							<div id="ratesBody"></div>
+							<div id="totalTime"></div>							
+							</center>
+						  </div>
+						  <div class="modal-footer">
+							<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+						  </div>
+						</div>
+					  </div>
+					</div>
+					
+					<div class="modal fade" id="chargingModal" tabindex="1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+					  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+						<div class="modal-content">
+						  <div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Charging Station</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							  <span aria-hidden="true" style="color: #fff">&times;</span>
+							</button>
+						  </div>
+						  <div class="modal-body">
+							<center>	
+							<div id="chargingBody"></div>
+							</center>
+						  </div>
+						  <div class="modal-footer">
+							<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+						  </div>
+						</div>
+					  </div>
+					</div>
+					<div class="modal fade" id="eloadModal" tabindex="1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false" >
+					  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+						<div class="modal-content">
+						  <div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">E-LOAD</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							  <span aria-hidden="true" style="color: #fff">&times;</span>
+							</button>
+						  </div>
+						  <div class="modal-body">
+							<center>	
+							<div id="eloadingBody">
+								<h4 id="eloadConfirm" style="display: none"><span style="color: #2e86de; text-shadow: 1px 2px 3px #000">CONFIRM YOUR SELECTED DETAILS</span></h4>
+								<div id="mobileNumDiv" class="input-bottom-space-20px">
+									<label for="exampleFormControlSelect2">Mobile #</label>
+									<input type="number" class="form-control" id="mobileNo" aria-describedby="mobileNo"  pattern="\d*" maxlength="11" placeholder="Enter mobile number (Ex: 09182392234)" required>
+								</div>
+								<div id="loadTypeDiv" style="display: none;" class="input-bottom-space-20px">
+									<label for="exampleFormControlSelect2" >Select Load Type</label>
+									<select class="form-control" name="loadType" onChange="loadTypeChanged(this)" id="loadTypeSelected" >
+									</select>
+								</div>
+								<div id="productTypeDiv" style="display: none;" class="input-bottom-space-20px">
+									<label for="exampleFormControlSelect2">Select Product</label>
+									<select class="form-control input-bottom-space-20px" name="productType" id="productTypeSelected" onChange="productTypeChanged(this)">
+									</select>
+									<label for="exampleFormControlSelect2">Price (PHP)</label>
+									<input type="text" class="form-control" id="price" aria-describedby="mobileNo" disabled>
+								</div>
+								<br/>
+								<h5 id="eloadConfirm2" style="display: none;" class="input-bottom-space-20px"><span style="color: #2e86de; text-shadow: 1px 2px 3px #000">Please make sure to insert the exact amount <ul style="
+									font-size: medium;
+									color: white;
+									text-align: left;
+								"><li>In case theres an excess amount or amount is insufficient, it will be converted to a voucher code and you can use it for your next e-Loading or you can use it on internet service.</li></ul></span></h5>
+							</div>
+							</center>
+						  </div>
+						  <div class="modal-footer">
+							<button type="button" id="buyEloadPrevBtn" class="btn btn-danger" onclick="buyEloadPrevAction(); return false">Close</button>
+						    <button type="button" id="buyEloadBtn" onclick="buyEloadAction(); return false" class="btn btn-success">Next</button>
+						  </div>
+						</div>
+					  </div>
+					</div>	
+					
+					<div class="modal fade" id="insMulti" role="dialog" data-backdrop="static" data-keyboard="false">
+						<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-header">
+								  
+							</div>
+							<div class="modal-body">
+			
+								<div id="vendoSelectDiv">
+									<center>
+										<label for="exampleFormControlSelect2">Select Vendo</label>
+											<select class="form-control" name="vendoSelected" id="vendoSelected" hidden></select>
+									</center>
+								</div>
+		
+							</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal" style="color: #fff">Close</button>
+						</div>
+					</div>
+		
+					</div>
+					</div>
+		
+					<div class="modal fade" id="addBtn" role="dialog" data-backdrop="static" data-keyboard="false">
+						<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-header">
+							</div>
+							<div class="modal-body">
+								<div id="vendoSelectDiv">
+									<center>
+										<button type="button" id="insertBtn1" onclick="insertBtnAction(); return false" data-dismiss="modal" class="btn btn-success block-btn" style="margin-top: 0;" data-toggle="modal">BUY WIFI</button>		
+					
+										<button type="button" id="promoRateBtn" onclick="promoBtnAction(); return false" data-dismiss="modal" class="btn btn-info block-btn">PROMO RATES</button>
+
+										<button type="button" id="eloadBtn1" onclick="eloadBtnAction(); return false" data-dismiss="modal" class="btn btn-info block-btn" >BUY E-LOAD</button>
+		
+										<button type="button" id="chargingBtn1" onclick="chargingBtnAction(); return false" data-dismiss="modal" class="btn btn-success block-btn">CHARGING STATION</button>
+									</center>
+							</div>
+							</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal" style="color: #fff">Close</button>
+						</div>
+					</div>
+		
+					</div>
+					</div>	
+		
+
+					<div class="modal fade" id="scanQrModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+						<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+						  <div class="modal-content">
+							<div class="modal-header">
+							  <h5 class="modal-title" id="exampleModalLabel">Purchase Voucher using QR Code</h5>
+							  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true" style="color: #fff">&times;</span>
+							  </button>
+							</div>
+							<div class="modal-body">
+								<center>
+									<p>Present this QR code to the vendo owner</p>
+									
+									<div id="qrcode" class="qrcode-wrapper"></div>
+									<br/>
+									<p>Once your request has been approved you will be automatically logged in.</p>
+								</center>
+							</div>
+							<div class="modal-footer">
+							  <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+							</div>
+						  </div>
+						</div>
+					  </div>
+
+				<div class="modal fade" id="memberModal" role="dialog" data-backdrop="static" data-keyboard="false">
+					<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+						
+						<button type="button" class="close" data-dismiss="modal" style="color: #fff">&times;</button><br>        
+		  
+						</div>
+						<div class="modal-body">
+						<!-- content -->
+						<div class="memdiv">
+						<center>
+						<!-- title -->
+						<h4 class="modal-title"><span style="color: #2e86de; text-shadow: 1px 2px 3px #000">Member Login</span></h4>
+						<form name="login" action="$(link-login-only)" method="post" $(if chap-id) onSubmit="return doLoginMember()" $(endif)>
+							<input type="hidden" name="dst" value="$(link-orig)" />
+							<input type="hidden" name="popup" value="true" />
+							<span style="float: left; color: #a4b0be">Username</span><br>
+							<input name="username" type="text" value="$(username)" /><br>
+							<span style="float: left; color: #a4b0be">Password</span><br>
+							<input name="password" type="password" /><br>
+							<button class="btn btn-primary" type="submit" value="Connect" style="width: 50%">Login</button>
+						</form>
+						</center>
+		  
+						</div>
+		  
+						</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal" style="color: #fff">Close</button>
+					</div>
+				</div>
+      
+				</div>
+			</div>
+
+                </div>
+
+				<div style="margin-top: 0px; z-index: 1;">
+					<img style="width: 296px; min-width: 156px; height: auto; margin: 0 auto; display: block;" src="assets/img/ml-bottom.png" class="img-fluid"/>
+				</div>	
+
+				<div class="footer">
+					<span class="footers">
+					Powered by: <a id="footbrand" href="https://www.facebook.com/niwdej">niwdej@yahoo.com</span>				
+				</div>
+            </div>
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/popper.min.js"></script>
+			<script src="assets/js/bootstrap.min.js"></script>
+			<script src="assets/js/toast.min.js"></script>
+			<script src="assets/js/core.js"></script>
+			<script src="assets/js/eload.js"></script>
+			<script>
+				var reLogin = getStorageValue('reLogin');
+				var hotspotAddress = "$(server-address)"; 
+				var interfaceName = "$(interface-name)";
+				if(reLogin == '1'){
+					setStorageValue('reLogin', '0');
+					doLogin();
+				}
+			</script>
+			
+			<script>
+				function off() {
+					document.getElementById("overlay").style.display = "none";
+				}
+				var purchaseInfo = "juanfi://purchasevoucher?mac="+mac+"&ip="+uIp;
+				
+				new QRCode(document.getElementById("qrcode"), JSON.stringify(purchaseInfo) );
+			</script>
+			
+			
+			<div id="loaderDiv" class="spinner hidden">
+				<center>
+					<img src="assets/loading.svg" />
+				</center>
+			</div>
+	</div>	
+
+</div>	
+</div>
+</div>
+</body>
+
+</html>
