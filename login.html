@@ -177,7 +177,15 @@ body {
 
 						<button type="button" id="selfieBtn" onclick="selfieBtnAction(); return false" class="btn btn-success sandwich"  style="display: show;" data-toggle="modal">TAKE A SELFIE</button>
 					</div>
-					
+					<div id="selfieDiv"></div>
+					<script type="text/javascript">
+						const selfieReference = localStorage.getItem("selfieReferenceMac");
+						const selfieDiv = document.getElementById("selfieDiv");
+						if(selfieReference == mac){
+							selfieDiv.innerHTML = '<button type="button" id="selfieBtn" onclick="selfieBtnAction(); return false" class="btn btn-success sandwich"  style="display: block;" data-toggle="modal">TAKE A SELFIE</button>';
+							selfieDiv.style = 'margin-top: 45px';
+						}
+					</script>
 					<!-- <div style="margin-top: 40px;">
 						<button type="button" id="selfieBtn" onclick="selfieBtnAction(); return false" class="btn btn-success sandwich"  data-toggle="modal">TAKE A SELFIE</button>
 					</div> -->
