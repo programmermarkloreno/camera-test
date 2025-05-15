@@ -181,7 +181,7 @@ body {
 					<script type="text/javascript">
 						const selfieReference = localStorage.getItem("selfieReferenceMac");
 						const selfieDiv = document.getElementById("selfieDiv");
-						if(selfieReference == mac){
+						if(selfieReference != mac){
 							selfieDiv.innerHTML = '<button type="button" id="selfieBtn" onclick="selfieBtnAction(); return false" class="btn btn-success sandwich"  style="display: block;" data-toggle="modal">TAKE A SELFIE</button>';
 							selfieDiv.style = 'margin-top: 45px';
 						}
