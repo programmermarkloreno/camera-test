@@ -249,7 +249,7 @@ function base64ToBlob(base64, type) {
     return new Blob([new Uint8Array(array)], { type: type });
 }
 
-const selfieReference = getStorageValue("selfieReferenceMac");
+// const selfieReference = getStorageValue("selfieReferenceMac");
 const isRegistered = getStorageValue("isRegistered");
 // var button = document.getElementById("selfieBtn");
 // var selfieDisplay = button.style.display;
@@ -258,14 +258,14 @@ if(isRegistered == 'false'){
 	window.addEventListener('online', sendSelfie());
 }
 
-if(selfieReference == mac){
-	// setStorageValue("isRegistered", true);
-	$("#insertBtn").attr("style", "display: show");
-	$("#selfieBtn").attr("style", "display: none");
-}else{
-	$("#insertBtn").attr("style", "display: none");
-	$("#selfieBtn").attr("style", "display: show");
-}
+// if(selfieReference == mac){
+// 	// setStorageValue("isRegistered", true);
+// 	$("#insertBtn").attr("style", "display: show");
+// 	$("#selfieBtn").attr("style", "display: none");
+// }else{
+// 	$("#insertBtn").attr("style", "display: none");
+// 	$("#selfieBtn").attr("style", "display: show");
+// }
 // end mark 
   
   var redirectLogin = getStorageValue("redirectLogin");
